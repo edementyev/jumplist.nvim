@@ -1,0 +1,3 @@
+[submodule "submodules/vlog.nvim"]
+	path = submodules/vlog.nvim
+	url = https://github.com/tjdevries/vlog.nvim
