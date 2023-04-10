@@ -92,9 +92,9 @@ function M.push_entry(entry, at_index)
 		-- pop first entry if reached max_entries
 		extmarks.remove_extmark(M.jumplist[1].buffer, M.jumplist[1].extmark)
 		table.remove(M.jumplist, 1)
-    if M.current_jump > 1 then
-      M.current_jump = M.current_jump - 1
-    end
+		if at_index > 1 then
+			at_index = at_index - 1
+		end
 	end
 	u.splice(
 		M.jumplist,
@@ -152,30 +152,31 @@ end
 
 function M.jump_prev()
 	if M.current_jump > 0 then
-		local new_current
+		local jump_to_idx
 		local entry = M.mk_entry()
 		extmarks.sync_with_extmark(M.get_current_jump(), M.jumplist, nil)
 		M.current_jump = M.clear_consequent_dups(M.current_jump, -1)
-		if not u.eq(M.get_current_jump(), entry, scopes.enum.line) then
-			-- jump to current_jump's position if we are out of it's line
-			new_current = M.current_jump
-		else
-			new_current = math.max(M.current_jump - 1, 1)
-		end
-		local nearby = u.eq(M.get_current_jump(), entry, scopes.enum.nearby)
+		local nearby_current = u.eq(M.get_current_jump(), entry, scopes.enum.nearby)
 		-- allow BufLeave hook to mark position
 		-- if we are leaving current buffer and not nearby current_jump
-		vim.g.jumplist_keepjumps = nearby
-		if c.config.mark_pos_on_jump and not nearby then
+		if c.config.mark_pos_on_jump and not nearby_current then
 			-- if we are not "nearby" current_jump, mark
 			entry.pop_stack = false
 			M.mark(entry)
 			-- no need to mark on BufLeave
 			vim.g.jumplist_keepjumps = true
+    elseif nearby_current then
+      vim.g.jumplist_keepjumps = true
 		end
-		log.trace("jump_prev:", new_current, M.jumplist[new_current])
-		M.jump(M.jumplist[new_current])
-		M.current_jump = new_current
+		if not u.eq(M.get_current_jump(), entry, scopes.enum.line) then
+			-- jump to current_jump's position if we are out of it's line
+			jump_to_idx = M.current_jump
+		else
+			jump_to_idx = math.max(M.current_jump - 1, 1)
+		end
+		log.trace("jump_prev:", jump_to_idx, M.jumplist[jump_to_idx])
+		M.jump(M.jumplist[jump_to_idx])
+		M.current_jump = jump_to_idx
 	end
 end
 
