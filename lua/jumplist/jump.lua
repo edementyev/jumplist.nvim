@@ -147,6 +147,9 @@ function M.jump(entry)
 	if not pcall(api.nvim_win_set_cursor, window_to_use, { pos[1] + 1, pos[2] }) then
 		log.error("could not set cursor position to", pos[1] + 1, pos[2], "file", entry.file)
 	end
+  if c.config.center_on_jump then
+    vim.cmd("normal! zz")
+  end
 	vim.g.jumplist_keepjumps = false
 end
 

@@ -7,7 +7,7 @@ local log = require("jumplist.log")
 ---@class Jumplist.Config
 M.default_config = {
 	exclude_buftypes = { "terminal", "quickfix", "nofile", "prompt" },
-	exclude_filetypes = { "NvimTree", "packer", "aerial", "", "fugitive", "harpoon-menu" },
+	exclude_filetypes = { "NvimTree", "packer", "aerial", "", "fugitive", "harpoon-menu", "gitcommit" },
 	filename_valid = function(filename)
 		local result
 		if filename == "" then
@@ -26,7 +26,8 @@ M.default_config = {
 			lines = 7,
 		},
 	},
-	mark_pos_on_jump = true,
+	mark_pos_on_jump = false,
+	center_on_jump = true,
 	default_pop_stack = true,
 	event_hooks = true,
 	use_debounce = false,
